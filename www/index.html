@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@6.0.8/dist/browser/signalr.min.js" integrity="sha256-ch1bB+xhoRDsPegStKCRY0cnUOpfkTs5dWHKuvy465s=" crossorigin="anonymous"></script>
+    <script>
+        async function start () {
+            const userid = (await fetch('/.auth/me').then(res => res.json())).clientPrincipal.userDetails;
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(`/api/${userid}`)
+                .withAutomaticReconnect()
+                .build();
+    
+            connection.on('message', (message) => {
+                console.log(message);
+            });
+
+            await connection.start();
+        }
+
+        start();    
+    </script>
+</body>
+</html>
